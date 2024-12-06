@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer</title>
+    <style>
+        #uploaded-image {
+            display: none; /* Hide until an image is uploaded */
+            max-width: 100%; /* Responsive design */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Image Resizer</h1>
+    <form id="upload-form">
+        <input type="file" id="image-input" accept="image/*">
+    </form>
+    <img id="uploaded-image" src="#" alt="Uploaded Image">
+    <button id="resize-button-instagram">Instagram (1080x1080)</button>
+    <button id="resize-button-facebook">Facebook (1200x630)</button>
+    <button id="resize-button-twitter">Twitter (1200x675)</button>
+    <button id="resize-button-website">Website (600x300)</button>
+    <br>
+    <a id="download-button" style="display: none;">Download Resized Image</a>
+
+    <script>
+        // Function to display the selected image
+        document.getElementById('image-input').addEventListener('change', function() {
+            const uploadedImage = document.getElementById('uploaded-image');
+            const file = this.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block'; // Show the image
+                    document.getElementById('download-button').style.display = 'none'; // Hide download button until resized
+                };
+                reader.readAsDataURL(file);
+            } else {
+                uploadedImage.style.display = 'none'; // Hide if no file is selected
+            }
+        });
+
+        // Function to resize the image to specific dimensions when a button is clicked
+        document.getElementById('resize-button-instagram').addEventListener('click', function() {
+            resizeImage(1080, 1080);
+        });
+        document.getElementById('resize-button-facebook').addEventListener('click', function() {
+            resizeImage(1200, 630);
+        });
+        document.getElementById('resize-button-twitter').addEventListener('click', function() {
+            resizeImage(1200, 675);
+        });
+        document.getElementById('resize-button-website').addEventListener('click', function() {
+            resizeImage(600, 300);
+        });
+
+        // Function to resize the image and prepare it for download
+        function resizeImage(width, height) {
+            const uploadedImage = document.getElementById('uploaded-image');
+            
+            // Create a canvas element to draw the resized image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas dimensions to the specified width and height
+            canvas.width = width;
+            canvas.height = height;
+
+            // Draw the uploaded image onto the canvas with the new dimensions
+            ctx.drawImage(uploadedImage, 0, 0, width, height);
+
+            // Convert the canvas to a downloadable image format
+            const downloadButton = document.getElementById('download-button');
+            downloadButton.href = canvas.toDataURL('image/jpeg');
+            downloadButton.download = 'resized-image.jpg';
+            downloadButton.style.display = 'inline'; // Show the download button
+        }
+    </script>
+</body>
+</html>
